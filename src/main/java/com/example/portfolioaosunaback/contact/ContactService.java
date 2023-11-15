@@ -16,4 +16,9 @@ public class ContactService {
     public List<Contact> getContacts() {
         return contactRepository.findAll();
     }
+
+    public void addNewContact(Contact contact) {
+        contactRepository.save(contact);
+        System.out.println("Contacto guardado con éxito: " + contact);
+    }
 }

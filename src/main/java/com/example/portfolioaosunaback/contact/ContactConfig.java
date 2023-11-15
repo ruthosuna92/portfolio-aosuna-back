@@ -27,6 +27,7 @@ public class ContactConfig {
             repository.saveAll(
                     List.of(demo1, demo2)
             );
+
         };
     }
 }
