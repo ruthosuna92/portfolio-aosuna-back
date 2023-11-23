@@ -2,7 +2,6 @@ package com.example.portfolioaosunaback.contact;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -22,6 +21,11 @@ public class ContactController {
     @PostMapping
     public void registerNewContact(@RequestBody Contact contact) {
         contactService.addNewContact(contact);
+    }
+
+    @DeleteMapping(path = "{contactId}")
+    public void deleteContact(@PathVariable("contactId") Long contactId){
+        contactService.deleteContact(contactId);
     }
 
 }
