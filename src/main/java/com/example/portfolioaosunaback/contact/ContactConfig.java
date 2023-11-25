@@ -12,20 +12,27 @@ public class ContactConfig {
     CommandLineRunner commandLineRunner(ContactRepository repository){
         return args -> {
             Contact demo1 = new Contact(
-                    "Demo name",
+                    "Petronilo Paez",
                     "Demo subject",
-                    "demo@gmail.com",
+                    "petronilo@gmail.com",
                     "Description demo"
             );
 
             Contact demo2 = new Contact(
-                    "Demo 2",
+                    "Sinforosa Lopez",
                     "Subject 2",
-                    "demo2@gmail.com",
+                    "sinforosa@gmail.com",
                     "Description2"
             );
+
+            Contact demo3 = new Contact(
+                    "Pepito Perez",
+                    "Recruiter interested",
+                    "pepito@gmail.com",
+                    "This is a demo description with demo purpose"
+            );
             repository.saveAll(
-                    List.of(demo1, demo2)
+                    List.of(demo1, demo2, demo3)
             );
 
         };
