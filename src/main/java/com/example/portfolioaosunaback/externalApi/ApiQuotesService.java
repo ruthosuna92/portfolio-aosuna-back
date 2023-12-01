@@ -24,9 +24,9 @@ public class ApiQuotesService {
         this.apiKey = apiKey;
     }
 
-    public List<Object> getQuote() {
+    public List<Object> getQuote(String category) {
         try {
-            String apiQuoteUrl = "https://api.api-ninjas.com/v1/quotes?category=home";
+            String apiQuoteUrl = "https://api.api-ninjas.com/v1/quotes?category=" + category;
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
