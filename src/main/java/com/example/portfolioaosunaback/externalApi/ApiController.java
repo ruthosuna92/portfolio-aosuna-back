@@ -1,5 +1,6 @@
 package com.example.portfolioaosunaback.externalApi;
 
+import com.example.portfolioaosunaback.externalApi.graphs.Line;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +27,7 @@ public class ApiController {
     }
 
     @GetMapping("/valuesOfPetroleum")
-    public List<ObjectData> getPetroleumResponse(@RequestParam(name = "oil") List<String> products) {
-
+    public List<Line> getPetroleumResponse(@RequestParam(name = "oil") List<String> products) {
         return apiPetroleumService.reqPetroleumApi(products);
     }
 }

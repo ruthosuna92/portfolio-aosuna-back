@@ -1,5 +1,7 @@
 package com.example.portfolioaosunaback.externalApi;
 
+import com.example.portfolioaosunaback.externalApi.graphs.Line;
+import com.example.portfolioaosunaback.externalApi.graphs.Point;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -16,23 +18,32 @@ import java.util.List;
 public class ApiPetroleumService {
 
     private final RestTemplate restTemplate;
-    private final String apiKeyEia;
+
     private final ObjectData objectData;
+
+    private final String apiKeyEia;
+
 
 
     @Autowired
-    public ApiPetroleumService(RestTemplate restTemplate, @Value("${API_KEY_EIA}") String apiKeyEia, ObjectData objectData) {
+    public ApiPetroleumService(RestTemplate restTemplate, ObjectData objectData,
+                               @Value("${API_KEY_EIA}") String apiKeyEia) {
         this.restTemplate = restTemplate;
-        this.apiKeyEia = apiKeyEia;
         this.objectData = objectData;
+        this.apiKeyEia = apiKeyEia;
+
     }
 
 
-    public List<ObjectData> reqPetroleumApi(List<String> products) {
-        StringBuilder apiUrlBuilder = new StringBuilder("https://api.eia.gov/v2/petroleum/pri/land3/data/?api_key=" + apiKeyEia + "&frequency=annual&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000");
+    public List<Line> reqPetroleumApi(List<String> products) {
+        StringBuilder apiUrlBuilder = new StringBuilder(
+                "https://api.eia.gov/v2/petroleum/pri/land3/data/?api_key="
+                        + apiKeyEia
+                        + "&frequency=annual&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000");
 
         for (String product : products) {
             apiUrlBuilder.append("&facets[product][]=").append(product);
+
         }
 
         String stringApiUrl = apiUrlBuilder.toString();
@@ -57,6 +68,7 @@ public class ApiPetroleumService {
             List<ObjectData> objectDataList = new ArrayList<>();
             for (JsonNode objectNode : dataArray) {
                 ObjectData data = new ObjectData();
+
                 data.setPeriod(objectNode.path("period").asInt());
                 data.setProduct(objectNode.path("product").asText());
                 data.setValue(objectNode.path("value").asDouble());
@@ -65,13 +77,33 @@ public class ApiPetroleumService {
                 data.setUnits(objectNode.path("units").asText());
 
                 objectDataList.add(data);
-//                System.out.println("Period: " + objectNode.path("period").asInt());
-//                System.out.println("Product " + objectNode.path("product").asText());
-//                System.out.println("Value " + objectNode.path("value").asDouble());
             }
 
+            List<Line> graphs = new ArrayList<>();
+            for (String apiGravity : products){
+                Line line = new Line();
+                line.setCurve(apiGravity);
+                List<Point> points = new ArrayList<>();
 
-            return objectDataList;
+                for (ObjectData objectDataP : objectDataList){
+                    if(objectDataP.getProduct().equals(apiGravity)){
+                        line.setProductName(objectDataP.getProductName());
+                        line.setUnits(objectDataP.getUnits());
+                        line.setSeriesDescription(objectDataP.getSeriesDescription());
+                        Point point = new Point();
+
+                        point.setX(objectDataP.getPeriod());
+                        point.setY(objectDataP.getValue());
+                        points.add(point);
+
+                    }
+                }
+                line.setPeriodAndValue(points);
+                graphs.add(line);
+            }
+            System.out.println(graphs);
+//            return objectDataList;
+            return graphs;
         } catch (Exception e) {
             // Log the exception using a logging framework
             e.printStackTrace();

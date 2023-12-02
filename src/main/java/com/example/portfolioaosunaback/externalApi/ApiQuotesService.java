@@ -16,12 +16,13 @@ import java.util.List;
 public class ApiQuotesService {
 
     private final RestTemplate restTemplate;
-    private final String apiKey;
+
+    private final String apiKeyQuotes;
 
     @Autowired
-    public ApiQuotesService(RestTemplate restTemplate, @Value("${API_KEY}") String apiKey) {
+    public ApiQuotesService(RestTemplate restTemplate, @Value("${API_KEY_QUOTES}") String apiKeyQuotes) {
         this.restTemplate = restTemplate;
-        this.apiKey = apiKey;
+        this.apiKeyQuotes = apiKeyQuotes;
     }
 
     public List<Object> getQuote(String category) {
@@ -30,7 +31,7 @@ public class ApiQuotesService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("X-Api-Key", apiKey);
+            headers.set("X-Api-Key", apiKeyQuotes);
 
             HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 
